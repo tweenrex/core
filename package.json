@@ -10,7 +10,7 @@
         "@types/node": "^8.0.45",
         "chai": "^4.1.2",
         "del-cli": "^1.1.0",
-        "jest": "^21.2.1", 
+        "jest": "^21.2.1",
         "ts-jest": "^21.2.1",
         "tslint": "^5.7.0",
         "typescript": "^2.6.1"
@@ -43,12 +43,12 @@
     "scripts": {
         "build": "npm run build:node && npm run build:es2015",
         "build:node": "tsc -p tsconfig.node.json",
-        "build:es2015": "tsc -p tsconfig.es2015.json", 
+        "build:es2015": "tsc -p tsconfig.es2015.json",
         "clean": "node_modules/.bin/del-cli -f lib lib.es2015 types",
         "postversion": "git push --follow-tags && npm publish access=\"public\"",
         "preversion": "npm run rebuild",
         "rebuild": "npm run clean && npm run build",
         "test": "jest"
     },
-    "version": "1.2.0"
+    "version": "1.2.1"
 }
