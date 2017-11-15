@@ -10,14 +10,10 @@
         "@types/node": "^8.0.45",
         "chai": "^4.1.2",
         "del-cli": "^1.1.0",
-        "jest": "^21.2.1",
-        "rollup": "^0.51.2",
-        "rollup-plugin-node-resolve": "^3.0.0",
-        "rollup-plugin-typescript": "^0.8.1",
+        "jest": "^21.2.1", 
         "ts-jest": "^21.2.1",
         "tslint": "^5.7.0",
-        "typescript": "^2.6.1",
-        "uglify-js": "^3.1.1"
+        "typescript": "^2.6.1"
     },
     "jest": {
         "moduleFileExtensions": [
@@ -45,12 +41,10 @@
         "node_modules/@types"
     ],
     "scripts": {
-        "build": "npm run build:cdn && npm run compress:cdn && npm run build:node && npm run build:es2015",
-        "build:cdn": "rollup -c ./config/rollup.cdn.js",
+        "build": "npm run build:node && npm run build:es2015",
         "build:node": "tsc -p tsconfig.node.json",
-        "build:es2015": "tsc -p tsconfig.es2015.json",
-        "compress:cdn": "uglifyjs --config-file ./config/compress.json -o dist/tweenrex.min.js dist/tweenrex.js",
-        "clean": "node_modules/.bin/del-cli -f dist lib lib.es2015 types",
+        "build:es2015": "tsc -p tsconfig.es2015.json", 
+        "clean": "node_modules/.bin/del-cli -f lib lib.es2015 types",
         "postversion": "git push --follow-tags && npm publish",
         "preversion": "npm run rebuild",
         "rebuild": "npm run clean && npm run build",
