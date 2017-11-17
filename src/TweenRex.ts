@@ -1,4 +1,4 @@
-import { ITweenOptions, ITweenRex, ITweenRexAddOptions } from './types'
+import { ITweenOptions, ITweenRex, ITweenRexAddOptions, ITRexObservable, IAction } from './types'
 import { _ } from './internal/constants'
 import { isString } from './internal/inspect'
 import { newify } from './internal/newify'
@@ -11,15 +11,12 @@ import { coalesce } from './internal/colesce'
 /**
  * Creates a TweenRex instance.  This allows tweening over a period of time with playback controls.
  */
-export function TweenRex(opts?: ITweenOptions | ITweenRex) {
-    if (opts instanceof TweenRex) {
-        return opts as ITweenRex
-    }
-
+export function TweenRex(opts?: ITweenOptions): ITweenRex {
     const options = (opts || {}) as ITweenOptions
 
     // create and extend instance
-    const self = newify<ITweenRex>(this, TweenRex)
+    const self = newify<ITweenRexInternal>(this, TweenRex)
+    self._opts = options
     self._timer = options.timer || defaultTimer
     self._pos = options.duration || 0
     self._time = 0
@@ -28,7 +25,7 @@ export function TweenRex(opts?: ITweenOptions | ITweenRex) {
     self.playbackRate = 1
 
     self._tick = timestamp => {
-        const delta = (options.frameSize || (timestamp - (self._last || timestamp)) * self.playbackRate)
+        const delta = options.frameSize || (timestamp - (self._last || timestamp)) * self.playbackRate
         const n = self._time + delta
         self._last = timestamp
         self.seek(n)
@@ -57,7 +54,7 @@ export function TweenRex(opts?: ITweenOptions | ITweenRex) {
 }
 
 TweenRex.prototype = {
-    get duration(this: ITweenRex) {
+    get duration(this: ITweenRexInternal) {
         const self = this
         const tweens = self._tweens
 
@@ -73,19 +70,19 @@ TweenRex.prototype = {
         }
         return maxSize
     },
-    set duration(this: ITweenRex, value: number) {
+    set duration(this: ITweenRexInternal, value: number) {
         this._pos = value
     },
-    get currentTime(this: ITweenRex): number {
+    get currentTime(this: ITweenRexInternal): number {
         return this._time
     },
-    set currentTime(this: ITweenRex, time: number) {
+    set currentTime(this: ITweenRexInternal, time: number) {
         this.seek(time)
     },
-    get isPlaying(this: ITweenRex) {
+    get isPlaying(this: ITweenRexInternal) {
         return !!this._sub
     },
-    add(this: ITweenRex, tweens: ITweenRex[], opts?: ITweenRexAddOptions) {
+    add(this: ITweenRexInternal, tweens: ITweenRex[], opts?: ITweenRexAddOptions) {
         const self = this
         if (!self._tweens) {
             self._tweens = []
@@ -110,7 +107,7 @@ TweenRex.prototype = {
         const tweenObjs: typeof _tweens = Array(ilen)
         for (let i = 0; i < ilen; i++) {
             // wrap in TweenRex to ensure it is a TweenRex instance
-            const tween = TweenRex(tweens[i])
+            const tween = ensureTween(tweens[i])
 
             // tell tween to stop current playing
             if (tween.isPlaying) {
@@ -139,7 +136,7 @@ TweenRex.prototype = {
             removeAll(_tweens, tweenObjs)
         }
     },
-    play(this: ITweenRex) {
+    play(this: ITweenRexInternal) {
         const self = this
         const timer = self._timer
         if (timer && !self.isPlaying) {
@@ -155,30 +152,36 @@ TweenRex.prototype = {
 
             self.seek(n)
             self._sub = timer.subscribe(self._tick)
+            if (self._opts.onPlay) {
+                self._opts.onPlay()
+            }
         }
         return self
     },
-    restart(this: ITweenRex) {
+    restart(this: ITweenRexInternal) {
         const self = this
         return self
             .pause()
             .seek(self.playbackRate >= 0 ? 0 : self.duration)
             .play()
     },
-    pause(this: ITweenRex) {
+    pause(this: ITweenRexInternal) {
         const self = this
         const sub = self._sub
         if (sub) {
             sub()
             self._sub = self._last = _
+            if (self._opts.onPause) {
+                self._opts.onPause()
+            }
         }
         return self
     },
-    reverse(this: ITweenRex) {
+    reverse(this: ITweenRexInternal) {
         this.playbackRate *= -1
         return this
     },
-    seek(this: ITweenRex, n: number | string) {
+    seek(this: ITweenRexInternal, n: number | string) {
         const self = this
         const isForwards = self.playbackRate >= 0
         const duration = self.duration
@@ -187,19 +190,22 @@ TweenRex.prototype = {
         // resolve label
         let c = isString(n) ? self.labels[n as string] : n as number
 
+        let isFinished: boolean
         if (isForwards && c >= duration) {
             c = duration
             self.pause()
+            isFinished = true
         } else if (!isForwards && c <= 0) {
             c = 0
             self.pause()
+            isFinished = true
         }
 
         self._time = c
 
         let offset = c / (duration || 1)
         if (self.easing) {
-          offset = self.easing(offset)
+            offset = self.easing(offset)
         }
 
         self.next(offset)
@@ -217,13 +223,43 @@ TweenRex.prototype = {
             }
         }
 
+        if (isFinished && self._opts.onFinish) {
+          self._opts.onFinish()
+        }
+
         return self
     },
-    getLabel(this: ITweenRex, name: string) {
+    getLabel(this: ITweenRexInternal, name: string) {
         return this.labels[name]
     },
-    setLabel(this: ITweenRex, name: string, time?: number) {
+    setLabel(this: ITweenRexInternal, name: string, time?: number) {
         this.labels[name] = time
         return this
     }
+}
+
+/**
+ * A TweenRex instance.  This allows tweening over a period of time with playback controls.
+ */
+export interface ITweenRexInternal extends ITweenRex {
+    /** DO_NOT_USE: options used to instantiate this */
+    _opts: ITweenOptions
+    /** DO_NOT_USE: next position for add() */
+    _pos: number
+    /** DO_NOT_USE: currentTime backing property */
+    _time: number
+    /** DO_NOT_USE: last updated time */
+    _last: number
+    /** DO_NOT_USE: observable that provides new dates each frame */
+    _timer: ITRexObservable<number>
+    /** DO_NOT_USE: active subscription to the timer */
+    _sub: IAction
+    /** DO_NOT_USE: sub-tween list and their positions */
+    _tweens: { pos: number; tween: ITweenRex }[]
+    /** DO_NOT_USE: callback for the timer */
+    _tick: (delta: number) => void
+}
+
+function ensureTween(opts: ITweenOptions | ITweenRex): ITweenRexInternal {
+    return opts instanceof TweenRex ? opts as ITweenRexInternal : TweenRex(opts as ITweenOptions) as ITweenRexInternal
 }

@@ -120,18 +120,62 @@ describe('TweenRex()', () => {
     })
 
     test('easing property is live', () => {
-      const values: number[] = []
+        const values: number[] = []
 
-      const tween = TweenRex({
-          duration: 500,
-          easing: o => o * 2,
-          subscribe: o => values.push(o)
-      })
+        const tween = TweenRex({
+            duration: 500,
+            easing: o => o * 2,
+            subscribe: o => values.push(o)
+        })
 
-      tween.seek(250)
-      tween.easing = o => o
-      tween.seek(250)
+        tween.seek(250)
+        tween.easing = o => o
+        tween.seek(250)
 
-      assert.deepEqual(values, [1, .5])
-  })
+        assert.deepEqual(values, [1, 0.5])
+    })
+    test('onPlay is called when .play() is called', done => {
+        const tween = TweenRex({
+            duration: 1000,
+            onPlay() {
+                done()
+            }
+        })
+
+        tween.play()
+    })
+
+    test('onPause is called when .pause() is called', done => {
+        const tween = TweenRex({
+            duration: 1000,
+            onPause() {
+                done()
+            }
+        })
+
+        tween.play()
+        tween.pause()
+    })
+
+    test('onFinish is called when the duration is hit going forward', done => {
+        const tween = TweenRex({
+            duration: 50,
+            onFinish() {
+                done()
+            }
+        })
+
+        tween.play()
+    })
+
+    test('onFinish is called when the duration is hit going forward', done => {
+        const tween = TweenRex({
+            duration: 50,
+            onFinish() {
+                done()
+            }
+        })
+
+        tween.reverse().play()
+    })
 })

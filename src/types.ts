@@ -20,19 +20,19 @@ export interface IEasing {
  * Objects that are or resemble an HTML element
  */
 export interface IElement {
-  tagName: string
+    tagName: string
 }
 
 /**
  * Objects that have the necessary properties for scrolling
  */
 export interface IScrollable extends IElement {
-  scrollHeight: number
-  scrollLeft: number
-  scrollTop: number
-  scrollWidth: number
-  clientWidth: number
-  clientHeight: number
+    scrollHeight: number
+    scrollLeft: number
+    scrollTop: number
+    scrollWidth: number
+    clientWidth: number
+    clientHeight: number
 }
 
 /**
@@ -91,6 +91,18 @@ export interface ITweenOptions extends IObservableOptions<number> {
      */
     labels?: Record<string, number>
     /**
+     * Callback when playback finished due to hitting duration (if forward) or 0 (if backward)
+     */
+    onFinish?: IAction
+      /**
+     * Callback when play() is called
+     */
+    onPlay?: IAction
+    /**
+     * Callback when pause() is called
+     */
+    onPause?: IAction
+    /**
      * This should typically not be set.  Timer to use for frame-rate and deltas.
      */
     timer?: ITRexObservable<number>
@@ -130,6 +142,14 @@ export interface IScrollOptions extends IObservableOptions<number> {
      */
     easing?: IEasing
     /**
+     * Callback when play() is called
+     */
+    onPlay?: IAction
+    /**
+     * Callback when pause() is called
+     */
+    onPause?: IAction
+    /**
      * Element to observe. Specify a CSS selector or an Element
      */
     targets: string | IScrollable
@@ -161,20 +181,6 @@ export interface ITRexObservable<TValue> {
  * A TweenRex instance.  This allows tweening over a period of time with playback controls.
  */
 export interface ITweenRex extends ITRexObservable<number> {
-    /** DO_NOT_USE: next position for add() */
-    _pos: number
-    /** DO_NOT_USE: currentTime backing property */
-    _time: number
-    /** DO_NOT_USE: last updated time */
-    _last: number
-    /** DO_NOT_USE: observable that provides new dates each frame */
-    _timer: ITRexObservable<number>
-    /** DO_NOT_USE: active subscription to the timer */
-    _sub: IAction
-    /** DO_NOT_USE: sub-tween list and their positions */
-    _tweens: { pos: number; tween: ITweenRex }[]
-    /** DO_NOT_USE: callback for the timer */
-    _tick: (delta: number) => void
     /**
      * The total duration of the tween.  Setting this property increases the length of the tween.
      * If the tween contains sub-tweens, this will return either the value set or the length of the longest tween.
@@ -249,12 +255,6 @@ export interface ITweenRex extends ITRexObservable<number> {
  * A TyrannoScrollus instance.  This allows tweening based on changes to the x or y scroll position of an element
  */
 export interface ITyrannoScrollus extends ITRexObservable<number> {
-    /** DO_NOT_USE: active subscription to the timer */
-    _sub: IAction
-    /** DO_NOT_USE: observable that provides new dates each frame */
-    _timer: ITRexObservable<number>
-    /** DO_NOT_USE: callback for the timer */
-    _tick: () => void
     /**
      * The direction to observe. 'x' = horizontal; 'y' = vertical
      */

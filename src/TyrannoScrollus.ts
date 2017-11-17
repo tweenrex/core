@@ -1,4 +1,4 @@
-import { IScrollOptions, ITyrannoScrollus, IScrollable } from './types'
+import { IScrollOptions, ITyrannoScrollus, IScrollable, IAction, ITRexObservable } from './types'
 import { _ } from './internal/constants'
 import { newify } from './internal/newify'
 import { TRexObservable } from './TRexObservable'
@@ -9,8 +9,8 @@ import { resolveTarget } from './internal/resolveTarget'
  * Creates a TyrannoScrollus instance.  This allows tweening based on changes to the x or y scroll position of an element.
  */
 export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
-    const self = newify<ITyrannoScrollus>(this, TyrannoScrollus)
-
+    const self = newify<ITyrannoScrollusInternal>(this, TyrannoScrollus)
+    self._opts = options
     self.target = (resolveTarget(options.targets) as any) as IScrollable
     self._timer = options.timer || defaultTimer
     self.easing = options.easing
@@ -51,21 +51,41 @@ export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
 }
 
 TyrannoScrollus.prototype = {
-    get isPlaying(this: ITyrannoScrollus): boolean {
+    get isPlaying(this: ITyrannoScrollusInternal): boolean {
         return !!this._sub
     },
-    play(this: ITyrannoScrollus): void {
+    play(this: ITyrannoScrollusInternal): void {
         const self = this
         if (!self.isPlaying) {
             self._tick()
             self._sub = self._timer.subscribe(self._tick)
+            if (self._opts.onPlay) {
+              self._opts.onPlay()
+            }
         }
     },
-    pause(this: ITyrannoScrollus): void {
+    pause(this: ITyrannoScrollusInternal): void {
         const self = this
         if (self.isPlaying) {
             self._sub()
             self._sub = _
+            if (self._opts.onPause) {
+              self._opts.onPause()
+            }
         }
     }
+}
+
+/**
+ * private model of TyrannoScrollus
+ */
+interface ITyrannoScrollusInternal extends ITyrannoScrollus {
+  /** DO_NOT_USE: options used to instantiate this */
+  _opts: IScrollOptions
+  /** DO_NOT_USE: active subscription to the timer */
+  _sub: IAction
+  /** DO_NOT_USE: observable that provides new dates each frame */
+  _timer: ITRexObservable<number>
+  /** DO_NOT_USE: callback for the timer */
+  _tick: () => void
 }
