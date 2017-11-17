@@ -50,5 +50,5 @@
         "rebuild": "npm run clean && npm run build",
         "test": "jest"
     },
-    "version": "1.2.3"
+    "version": "1.2.4"
 }
