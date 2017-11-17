@@ -1,6 +1,6 @@
 # TweenRex Core
 
-This project contains the core objects for TweenRex: TRexObservable, TweenRex, and TyrannoScrollus
+This project contains the core objects for TweenRex: TRexObservable, TweenRex, and TyrannoScrollus.
 
 ## License
 This library is licensed under MIT.
