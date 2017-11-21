@@ -18,6 +18,9 @@ export function TRexObservable<TValue>(options?: IObservableOptions<TValue>): IT
     let buffer: TValue[]
 
     return {
+        value() {
+            return c
+        },
         dispose() {
           // clear subscribers
           subs.length = 0
@@ -38,7 +41,7 @@ export function TRexObservable<TValue>(options?: IObservableOptions<TValue>): IT
             for (let h = 0; h < buffer.length; h++) {
                 // copy subscribers in case one subscriber unsubscribes a subsequent one
                 const subs2 = subs.slice()
-                const n = buffer[h]
+                n = buffer[h]
 
                 // skip value if distinct is true and the same value is recorded from last time
                 if (!distinct || n !== c) {

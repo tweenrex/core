@@ -45,8 +45,8 @@ export type OneOrMany<T> = T | T[]
  */
 export interface IObservableOptions<TValue> {
     /**
-    * When true, subsequent values will not be published if they are the same as the last.  The default is true.
-    */
+     * When true, subsequent values will not be published if they are the same as the last.  The default is true.
+     */
     distinct?: boolean
     /**
      * Callback for when .dispose() is called
@@ -94,7 +94,7 @@ export interface ITweenOptions extends IObservableOptions<number> {
      * Callback when playback finished due to hitting duration (if forward) or 0 (if backward)
      */
     onFinish?: IAction
-      /**
+    /**
      * Callback when play() is called
      */
     onPlay?: IAction
@@ -163,6 +163,10 @@ export interface IScrollOptions extends IObservableOptions<number> {
  * A TRexObservable instance.  This is the base type of all other TRexes
  */
 export interface ITRexObservable<TValue> {
+    /**
+     * Last value published
+     */
+    value(): TValue
     /**
      * Unhooks all subscribers and performs cleanup logic
      */
@@ -264,6 +268,10 @@ export interface ITyrannoScrollus extends ITRexObservable<number> {
      */
     easing?: IEasing
     /**
+     * The target being observed
+     */
+    target: IScrollable
+    /**
      * Returns true if the scroll position is being observed.
      */
     isPlaying: boolean
@@ -275,8 +283,4 @@ export interface ITyrannoScrollus extends ITRexObservable<number> {
      * Stops listening to changes in the scroll position.
      */
     pause(): void
-    /**
-     * The target being observed
-     */
-    target: IScrollable
 }

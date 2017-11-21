@@ -30,6 +30,29 @@ describe('TyrannoScrollus()', () => {
         assert.equal(i, 0.5)
     })
 
+    test('sets offset to 0 when the scroll pane is not scrollable', () => {
+        const target: IScrollable = {
+            tagName: 'DIV',
+            scrollLeft: 0,
+            scrollWidth: 0,
+            clientWidth: 0,
+            clientHeight: 0,
+            scrollHeight: 0,
+            scrollTop: 0
+        }
+
+        const obs = TyrannoScrollus({
+            direction: 'y',
+            targets: target
+        })
+
+        target.scrollTop = 600
+
+        // observe changes
+        obs.play()
+        assert.equal(obs.value(), 0)
+    })
+
     test('onPlay is called when .play() is called', done => {
         const target: IScrollable = {
             tagName: 'DIV',
@@ -52,7 +75,7 @@ describe('TyrannoScrollus()', () => {
         obs.play()
     })
 
-    test('onPlay is called when .play() is called', done => {
+    test('onPause is called when .pause() is called', done => {
       const target: IScrollable = {
           tagName: 'DIV',
           scrollLeft: 0,

@@ -48,6 +48,7 @@ export function TweenRex(opts?: ITweenOptions): ITweenRex {
         obs.dispose()
     }
     self.next = obs.next
+    self.value = obs.value
     self.subscribe = obs.subscribe
 
     return self
@@ -218,8 +219,8 @@ TweenRex.prototype = {
                 const tween = t.tween
                 const startPos = t.pos
                 const endPos = startPos + (tween.duration || 1)
-                const offset = minMax((c - startPos) / (endPos - startPos), 0, 1)
-                tween.next(offset)
+                const ro = minMax((c - startPos) / (endPos - startPos), 0, 1)
+                tween.next(ro)
             }
         }
 

@@ -18,10 +18,19 @@ export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
 
     self._tick = () => {
         const target = self.target
-        // prettier-ignore
-        let value = self.direction === 'x'
-                ? target.scrollLeft / (target.scrollWidth - target.clientWidth)
-                : target.scrollTop / (target.scrollHeight - target.clientHeight)
+
+        // get current scroll offset and total scroll
+        let scrollOffset: number, totalScroll: number
+        if (self.direction === 'x') {
+            scrollOffset = target.scrollLeft
+            totalScroll = target.scrollWidth - target.clientWidth
+        } else {
+            scrollOffset = target.scrollTop
+            totalScroll = target.scrollHeight - target.clientHeight
+        }
+
+        // calculate value or use 0 if the total is NaN/0
+        let value = !totalScroll || !isFinite(totalScroll) ? 0 : scrollOffset / totalScroll
 
         // ease value if specified
         if (self.easing) {
@@ -35,7 +44,9 @@ export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
     // copy next/subscribe to this object
     const obs = TRexObservable<number>(options)
     self.next = obs.next
+    self.value = obs.value
     self.subscribe = obs.subscribe
+
     self.dispose = () => {
         // pause timeline to clear active state
         self.pause()
