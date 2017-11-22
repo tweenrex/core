@@ -98,7 +98,7 @@ describe('TyrannoScrollus()', () => {
       obs.pause()
     })
 
-    test('startAt clamps starting position', () => {
+    test('startAt specifies starting position', () => {
         const target: IScrollable = {
             tagName: 'DIV',
             scrollLeft: 550,
@@ -121,7 +121,7 @@ describe('TyrannoScrollus()', () => {
         assert.equal(obs.value(), .5)
     })
 
-    test('startAt clamps starting position', () => {
+    test('endAt specifies ending position', () => {
         const target: IScrollable = {
             tagName: 'DIV',
             scrollLeft: 100,
