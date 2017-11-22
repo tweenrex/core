@@ -4,6 +4,7 @@ import { newify } from './internal/newify'
 import { TRexObservable } from './TRexObservable'
 import { defaultTimer } from './internal/defaultTimer'
 import { resolveTarget } from './internal/resolveTarget'
+import { minMax } from './internal/math';
 
 /**
  * Creates a TyrannoScrollus instance.  This allows tweening based on changes to the x or y scroll position of an element.
@@ -34,7 +35,7 @@ export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
         }
 
         // calculate value or use 0 if the total is NaN/0
-        let value = !scrollEnd || !isFinite(scrollEnd) ? 0 : (scrollOffset - scrollStart) / (scrollEnd - scrollStart)
+        let value = minMax(!scrollEnd || !isFinite(scrollEnd) ? 0 : (scrollOffset - scrollStart) / (scrollEnd - scrollStart), 0, 1)
 
         // ease value if specified
         if (!self.easing) {

@@ -121,6 +121,29 @@ describe('TyrannoScrollus()', () => {
         assert.equal(obs.value(), .5)
     })
 
+    test('before startAt is 0', () => {
+        const target: IScrollable = {
+            tagName: 'DIV',
+            scrollLeft: 550,
+            scrollWidth: 0,
+            clientWidth: 0,
+            clientHeight: 0,
+            scrollHeight: 0,
+            scrollTop: 0
+        }
+
+        const obs = TyrannoScrollus({
+            direction: 'x',
+            targets: target,
+            startAt: 500
+        })
+
+
+        obs.play()
+
+        assert.equal(obs.value(), 0)
+    })
+
     test('endAt specifies ending position', () => {
         const target: IScrollable = {
             tagName: 'DIV',
@@ -142,5 +165,28 @@ describe('TyrannoScrollus()', () => {
         obs.play()
 
         assert.equal(obs.value(), .5)
+    })
+
+    test('after endAt is 1', () => {
+        const target: IScrollable = {
+            tagName: 'DIV',
+            scrollLeft: 550,
+            scrollWidth: 0,
+            clientWidth: 0,
+            clientHeight: 0,
+            scrollHeight: 0,
+            scrollTop: 0
+        }
+
+        const obs = TyrannoScrollus({
+            direction: 'x',
+            targets: target,
+            endAt: 500
+        })
+
+
+        obs.play()
+
+        assert.equal(obs.value(), 1)
     })
 })
