@@ -96,5 +96,51 @@ describe('TyrannoScrollus()', () => {
 
       obs.play()
       obs.pause()
-  })
+    })
+
+    test('startAt clamps starting position', () => {
+        const target: IScrollable = {
+            tagName: 'DIV',
+            scrollLeft: 550,
+            scrollWidth: 600,
+            clientWidth: 0,
+            clientHeight: 0,
+            scrollHeight: 0,
+            scrollTop: 0
+        }
+
+        const obs = TyrannoScrollus({
+            direction: 'x',
+            targets: target,
+            startAt: 500
+        })
+
+
+        obs.play()
+
+        assert.equal(obs.value(), .5)
+    })
+
+    test('startAt clamps starting position', () => {
+        const target: IScrollable = {
+            tagName: 'DIV',
+            scrollLeft: 100,
+            scrollWidth: 800,
+            clientWidth: 0,
+            clientHeight: 0,
+            scrollHeight: 0,
+            scrollTop: 0
+        }
+
+        const obs = TyrannoScrollus({
+            direction: 'x',
+            targets: target,
+            endAt: 200
+        })
+
+
+        obs.play()
+
+        assert.equal(obs.value(), .5)
+    })
 })

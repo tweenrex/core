@@ -16,6 +16,15 @@ export interface IEasing {
     (o: number): number
 }
 
+export interface IEasingAsync {
+    (n: number, fn: IRenderFunction): void
+    tr_type?: 'ASYNC'
+}
+
+export interface IRenderFunction {
+    (offset: number): void
+}
+
 /**
  * Objects that are or resemble an HTML element
  */
@@ -138,6 +147,14 @@ export interface IScrollOptions extends IObservableOptions<number> {
      */
     direction?: 'x' | 'y'
     /**
+     * Clamp starting at this pixel
+     */
+    startAt?: number
+    /**
+     * Clamp ending at this pixel
+     */
+    endAt?: number
+    /**
      * Easing function to apply to the whole Tween instance
      */
     easing?: IEasing
@@ -259,6 +276,14 @@ export interface ITweenRex extends ITRexObservable<number> {
  * A TyrannoScrollus instance.  This allows tweening based on changes to the x or y scroll position of an element
  */
 export interface ITyrannoScrollus extends ITRexObservable<number> {
+    /**
+     * Clamp starting at this pixel
+     */
+    startAt?: number
+    /**
+     * Clamp ending at this pixel
+     */
+    endAt?: number
     /**
      * The direction to observe. 'x' = horizontal; 'y' = vertical
      */
