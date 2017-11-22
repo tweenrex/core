@@ -1,4 +1,4 @@
-import { IScrollOptions, ITyrannoScrollus, IScrollable, IAction, ITRexObservable } from './types'
+import { IScrollOptions, ITyrannoScrollus, IScrollable, IAction, ITRexObservable, IEasingAsync } from './types'
 import { _ } from './internal/constants'
 import { newify } from './internal/newify'
 import { TRexObservable } from './TRexObservable'
@@ -13,6 +13,8 @@ export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
     self._opts = options
     self.target = (resolveTarget(options.targets) as any) as IScrollable
     self._timer = options.timer || defaultTimer
+    self.startAt = options.startAt
+    self.endAt = options.endAt
     self.easing = options.easing
     self.direction = options.direction
 
@@ -20,25 +22,28 @@ export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
         const target = self.target
 
         // get current scroll offset and total scroll
-        let scrollOffset: number, totalScroll: number
+        let scrollOffset: number, scrollStart: number, scrollEnd: number
         if (self.direction === 'x') {
             scrollOffset = target.scrollLeft
-            totalScroll = target.scrollWidth - target.clientWidth
+            scrollStart = self.startAt || 0
+            scrollEnd =  self.endAt ? self.endAt : target.scrollWidth - target.clientWidth
         } else {
             scrollOffset = target.scrollTop
-            totalScroll = target.scrollHeight - target.clientHeight
+            scrollStart = self.startAt || 0
+            scrollEnd = self.endAt ? self.endAt : target.scrollHeight - target.clientHeight
         }
 
         // calculate value or use 0 if the total is NaN/0
-        let value = !totalScroll || !isFinite(totalScroll) ? 0 : scrollOffset / totalScroll
+        let value = !scrollEnd || !isFinite(scrollEnd) ? 0 : (scrollOffset - scrollStart) / (scrollEnd - scrollStart)
 
         // ease value if specified
-        if (self.easing) {
-            value = self.easing(value)
+        if (!self.easing) {
+            self.next(value)
+        } else if ((self.easing as IEasingAsync).tr_type === 'ASYNC') {
+            (self.easing as IEasingAsync)(value, self.next)
+        } else {
+            self.next(self.easing(value))
         }
-
-        // publish next value
-        self.next(value)
     }
 
     // copy next/subscribe to this object

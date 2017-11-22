@@ -186,8 +186,6 @@ TweenRex.prototype = {
         const self = this
         const isForwards = self.playbackRate >= 0
         const duration = self.duration
-        const tweens = self._tweens
-
         // resolve label
         let c = isString(n) ? self.labels[n as string] : n as number
 
@@ -209,6 +207,11 @@ TweenRex.prototype = {
             offset = self.easing(offset)
         }
 
+        if (isFinished && self._opts.onFinish) {
+            self._opts.onFinish()
+        }
+        const tweens = self._tweens
+
         self.next(offset)
 
         // update sub-timelines
@@ -222,10 +225,6 @@ TweenRex.prototype = {
                 const ro = minMax((c - startPos) / (endPos - startPos), 0, 1)
                 tween.next(ro)
             }
-        }
-
-        if (isFinished && self._opts.onFinish) {
-          self._opts.onFinish()
         }
 
         return self
