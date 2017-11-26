@@ -70,7 +70,7 @@ describe('TweenRex()', () => {
         // prettier-ignore
         obs.subscribe([
               o => values.push(o),
-              o => values.push(o*o)
+              o => values.push(o * o)
             ])
 
         obs.seek(500)
@@ -85,7 +85,7 @@ describe('TweenRex()', () => {
         // prettier-ignore
         const unsubscribe = obs.subscribe([
         o => values.push(o),
-        o => values.push(o*o)
+        o => values.push(o * o)
       ])
 
         unsubscribe()
@@ -177,5 +177,18 @@ describe('TweenRex()', () => {
         })
 
         tween.reverse().play()
+    })
+
+    test('onFinish is not called as a result of seeking to end', () => {
+        let isHit = false
+        const tween = TweenRex({
+            duration: 50,
+            onFinish() {
+                isHit = true
+            }
+        })
+
+        tween.seek(50)
+        assert.equal(isHit, false)
     })
 })

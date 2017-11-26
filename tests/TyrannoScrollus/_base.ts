@@ -184,7 +184,6 @@ describe('TyrannoScrollus()', () => {
             endAt: 500
         })
 
-
         obs.play()
 
         assert.equal(obs.value(), 1)

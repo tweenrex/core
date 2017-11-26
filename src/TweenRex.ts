@@ -185,19 +185,20 @@ TweenRex.prototype = {
     seek(this: ITweenRexInternal, n: number | string) {
         const self = this
         const isForwards = self.playbackRate >= 0
+        const wasPlaying = self.isPlaying
         const duration = self.duration
         // resolve label
         let c = isString(n) ? self.labels[n as string] : n as number
 
-        let isFinished: boolean
+        let isAtEnd: boolean
         if (isForwards && c >= duration) {
             c = duration
             self.pause()
-            isFinished = true
+            isAtEnd = true
         } else if (!isForwards && c <= 0) {
             c = 0
             self.pause()
-            isFinished = true
+            isAtEnd = true
         }
 
         self._time = c
@@ -207,7 +208,7 @@ TweenRex.prototype = {
             offset = self.easing(offset)
         }
 
-        if (isFinished && self._opts.onFinish) {
+        if (isAtEnd && wasPlaying && self._opts.onFinish) {
             self._opts.onFinish()
         }
         const tweens = self._tweens
