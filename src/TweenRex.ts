@@ -211,12 +211,22 @@ TweenRex.prototype = {
         if (isAtEnd && wasPlaying && self._opts.onFinish) {
             self._opts.onFinish()
         }
-        const tweens = self._tweens
 
+        const isSeekingBackward = c < self.value()
         self.next(offset)
 
         // update sub-timelines
+        const tweens = self._tweens
         if (tweens) {
+            // loop tween order so that the subscribers that need the property change are handled last
+            // this is a fix for using interpolate() on the same target and property on multiple subtweens
+            const d = duration - c
+            tweens.sort((a, b) => ((d + a.pos) % duration) - ((d + b.pos) % duration))
+
+            if (isSeekingBackward) {
+                tweens.reverse()
+            }
+
             // determine if in range and perform an update
             for (let i = 0, ilen = tweens.length; i < ilen; i++) {
                 const t = tweens[i]
