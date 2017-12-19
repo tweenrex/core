@@ -6,5 +6,5 @@ import { _ } from './constants'
  * @param fallback value to set if equal to undefined
  */
 export function coalesce<T>(current: T, fallback: T): T {
-  return current === _ ? fallback : current
+    return current === _ ? fallback : current
 }

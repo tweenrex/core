@@ -2,8 +2,6 @@ import { TRexObservable } from '../TRexObservable'
 import { ITRexObservable } from '../types'
 import { onNextFrame } from './onNextFrame'
 
-
-
 const defaultTimer: ITRexObservable<number> = TRexObservable<number>({
     onSubscribe(subs): void {
         if (!subs.length) {
@@ -17,4 +15,4 @@ const defaultTimer: ITRexObservable<number> = TRexObservable<number>({
     }
 })
 
-export {defaultTimer}
+export { defaultTimer }

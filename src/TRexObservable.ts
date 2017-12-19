@@ -22,9 +22,9 @@ export function TRexObservable<TValue>(options?: IObservableOptions<TValue>): IT
             return c
         },
         dispose() {
-          // clear subscribers
-          subs.length = 0
-          onDispose()
+            // clear subscribers
+            subs.length = 0
+            onDispose()
         },
         next(n: TValue) {
             if (!buffer) {

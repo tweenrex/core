@@ -1,61 +1,60 @@
 {
-  "author": "Christopher Wallis <christopher.j.wallis@gmail.com> (http://notoriousb1t.com)",
-  "bugs": {
-    "url": "https://github.com/tweenrex/tweenrex/issues"
-  },
-  "description": "Reactive Tweening Engine",
-  "devDependencies": {
-    "@types/chai": "^4.0.4",
-    "@types/jest": "^21.1.6",
-    "@types/node": "^8.0.45",
-    "chai": "^4.1.2",
-    "concurrently": "^3.5.0",
-    "del-cli": "^1.1.0",
-    "jest": "^21.2.1",
-    "ts-jest": "^21.2.1",
-    "tslint": "^5.7.0",
-    "typescript": "^2.6.1"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "transform": {
-      "^.+\\.(ts)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    "author": "Christopher Wallis <christopher.j.wallis@gmail.com> (http://notoriousb1t.com)",
+    "bugs": {
+        "url": "https://github.com/tweenrex/tweenrex/issues"
     },
-    "testRegex": "tests/.*/.*\\.ts$"
-  },
-  "jsnext:main": "./lib.es2015/index.js",
-  "homepage": "https://github.com/tweenrex/tweenrex#readme",
-  "license": "MIT",
-  "main": "./lib/index.js",
-  "module": "./lib.es2015/index.js",
-  "name": "@tweenrex/core",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tweenrex/tweenrex"
-  },
-  "types": "./types/index",
-  "typings": "./types/index",
-  "typeRoots": [
-    "node_modules/@types"
-  ],
-  "scripts": {
-    "build": "npm run build:node && npm run build:es2015",
-    "build:node": "tsc -p tsconfig.node.json",
-    "build:es2015": "tsc -p tsconfig.es2015.json",
-    "build:watch": "tsc -p tsconfig.node.json -w",
-    "clean": "node_modules/.bin/del-cli -f lib lib.es2015 types",
-    "postversion": "git push --follow-tags && npm publish --access=\"public\"",
-    "preversion": "npm run rebuild",
-    "rebuild": "npm run clean && npm run build",
-    "start": "concurrently \"npm run build:watch\" \"npm run test:watch\"",
-    "test": "jest",
-    "test:watch": "jest && jest --watchAll"
-  },
-  "version": "1.4.2",
-  "publishConfig": {
-    "access": "public"
-  }
+    "description": "Reactive Tweening Engine",
+    "devDependencies": {
+        "@types/chai": "^4.0.4",
+        "@types/jest": "^21.1.6",
+        "@types/node": "^8.0.45",
+        "chai": "^4.1.2",
+        "concurrently": "^3.5.0",
+        "del-cli": "^1.1.0",
+        "jest": "^21.2.1",
+        "pre-commit": "^1.2.2",
+        "prettier": "^1.9.2",
+        "ts-jest": "^21.2.1",
+        "tslint": "^5.7.0",
+        "typescript": "^2.6.1"
+    },
+    "jest": {
+        "moduleFileExtensions": ["ts", "js"],
+        "transform": {
+            "^.+\\.(ts)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "tests/.*/.*\\.ts$"
+    },
+    "jsnext:main": "./lib.es2015/index.js",
+    "homepage": "https://github.com/tweenrex/tweenrex#readme",
+    "license": "MIT",
+    "main": "./lib/index.js",
+    "module": "./lib.es2015/index.js",
+    "name": "@tweenrex/core",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tweenrex/tweenrex"
+    },
+    "types": "./types/index",
+    "typings": "./types/index",
+    "typeRoots": ["node_modules/@types"],
+    "pre-commit": ["format"],
+    "scripts": {
+        "build": "npm run build:node && npm run build:es2015",
+        "build:node": "tsc -p tsconfig.node.json",
+        "build:es2015": "tsc -p tsconfig.es2015.json",
+        "build:watch": "tsc -p tsconfig.node.json -w",
+        "clean": "node_modules/.bin/del-cli -f lib lib.es2015 types",
+        "format": "prettier --print-width 120 --single-quote --no-semi --write \"src/**/*.ts\"",
+        "postversion": "git push --follow-tags && npm publish --access=\"public\"",
+        "preversion": "npm run rebuild",
+        "rebuild": "npm run clean && npm run build",
+        "start": "concurrently \"npm run build:watch\" \"npm run test:watch\"",
+        "test": "jest",
+        "test:watch": "jest && jest --watchAll"
+    },
+    "version": "1.4.2",
+    "publishConfig": {
+        "access": "public"
+    }
 }

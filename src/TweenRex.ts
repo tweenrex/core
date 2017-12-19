@@ -96,7 +96,7 @@ TweenRex.prototype = {
         opts = opts || {}
 
         let pos = coalesce(
-            isString(opts.position) ? self.labels[opts.position] : opts.position as number,
+            isString(opts.position) ? self.labels[opts.position] : (opts.position as number),
             self.duration
         )
 
@@ -188,7 +188,7 @@ TweenRex.prototype = {
         const wasPlaying = self.isPlaying
         const duration = self.duration
         // resolve label
-        let c = isString(n) ? self.labels[n as string] : n as number
+        let c = isString(n) ? self.labels[n as string] : (n as number)
 
         let isAtEnd: boolean
         if (isForwards && c >= duration) {
@@ -221,7 +221,7 @@ TweenRex.prototype = {
             // loop tween order so that the subscribers that need the property change are handled last
             // this is a fix for using interpolate() on the same target and property on multiple subtweens
             const d = duration - c
-            tweens.sort((a, b) => ((d + a.pos) % duration) - ((d + b.pos) % duration))
+            tweens.sort((a, b) => (d + a.pos) % duration - (d + b.pos) % duration)
 
             if (isSeekingBackward) {
                 tweens.reverse()
@@ -272,5 +272,7 @@ export interface ITweenRexInternal extends ITweenRex {
 }
 
 function ensureTween(opts: ITweenOptions | ITweenRex): ITweenRexInternal {
-    return opts instanceof TweenRex ? opts as ITweenRexInternal : TweenRex(opts as ITweenOptions) as ITweenRexInternal
+    return opts instanceof TweenRex
+        ? (opts as ITweenRexInternal)
+        : (TweenRex(opts as ITweenOptions) as ITweenRexInternal)
 }

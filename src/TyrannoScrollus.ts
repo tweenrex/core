@@ -4,7 +4,7 @@ import { newify } from './internal/newify'
 import { TRexObservable } from './TRexObservable'
 import { defaultTimer } from './internal/defaultTimer'
 import { resolveTarget } from './internal/resolveTarget'
-import { minMax } from './internal/math';
+import { minMax } from './internal/math'
 
 /**
  * Creates a TyrannoScrollus instance.  This allows tweening based on changes to the x or y scroll position of an element.
@@ -27,7 +27,7 @@ export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
         if (self.direction === 'x') {
             scrollOffset = target.scrollLeft
             scrollStart = self.startAt || 0
-            scrollEnd =  self.endAt ? self.endAt : target.scrollWidth - target.clientWidth
+            scrollEnd = self.endAt ? self.endAt : target.scrollWidth - target.clientWidth
         } else {
             scrollOffset = target.scrollTop
             scrollStart = self.startAt || 0
@@ -35,13 +35,18 @@ export function TyrannoScrollus(options: IScrollOptions): ITyrannoScrollus {
         }
 
         // calculate value or use 0 if the total is NaN/0
-        let value = minMax(!scrollEnd || !isFinite(scrollEnd) ? 0 : (scrollOffset - scrollStart) / (scrollEnd - scrollStart), 0, 1)
+        let value = minMax(
+            !scrollEnd || !isFinite(scrollEnd) ? 0 : (scrollOffset - scrollStart) / (scrollEnd - scrollStart),
+            0,
+            1
+        )
 
         // ease value if specified
         if (!self.easing) {
             self.next(value)
         } else if ((self.easing as IEasingAsync).tr_type === 'ASYNC') {
-            (self.easing as IEasingAsync)(value, self.next)
+            // tslint:disable-next-line:whitespace
+            ;(self.easing as IEasingAsync)(value, self.next)
         } else {
             self.next(self.easing(value))
         }
@@ -77,7 +82,7 @@ TyrannoScrollus.prototype = {
             self._tick()
             self._sub = self._timer.subscribe(self._tick)
             if (self._opts.onPlay) {
-              self._opts.onPlay()
+                self._opts.onPlay()
             }
         }
     },
@@ -87,7 +92,7 @@ TyrannoScrollus.prototype = {
             self._sub()
             self._sub = _
             if (self._opts.onPause) {
-              self._opts.onPause()
+                self._opts.onPause()
             }
         }
     }
@@ -97,12 +102,12 @@ TyrannoScrollus.prototype = {
  * private model of TyrannoScrollus
  */
 interface ITyrannoScrollusInternal extends ITyrannoScrollus {
-  /** DO_NOT_USE: options used to instantiate this */
-  _opts: IScrollOptions
-  /** DO_NOT_USE: active subscription to the timer */
-  _sub: IAction
-  /** DO_NOT_USE: observable that provides new dates each frame */
-  _timer: ITRexObservable<number>
-  /** DO_NOT_USE: callback for the timer */
-  _tick: () => void
+    /** DO_NOT_USE: options used to instantiate this */
+    _opts: IScrollOptions
+    /** DO_NOT_USE: active subscription to the timer */
+    _sub: IAction
+    /** DO_NOT_USE: observable that provides new dates each frame */
+    _timer: ITRexObservable<number>
+    /** DO_NOT_USE: callback for the timer */
+    _tick: () => void
 }
