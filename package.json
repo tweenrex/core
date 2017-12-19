@@ -60,7 +60,7 @@
         "test": "jest",
         "test:watch": "jest && jest --watchAll"
     },
-    "version": "1.4.2",
+    "version": "1.5.1",
     "publishConfig": {
         "access": "public"
     }
