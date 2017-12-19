@@ -19,7 +19,10 @@
         "typescript": "^2.6.1"
     },
     "jest": {
-        "moduleFileExtensions": ["ts", "js"],
+        "moduleFileExtensions": [
+            "ts",
+            "js"
+        ],
         "transform": {
             "^.+\\.(ts)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
         },
@@ -37,8 +40,12 @@
     },
     "types": "./types/index",
     "typings": "./types/index",
-    "typeRoots": ["node_modules/@types"],
-    "pre-commit": ["format"],
+    "typeRoots": [
+        "node_modules/@types"
+    ],
+    "pre-commit": [
+        "format"
+    ],
     "scripts": {
         "build": "npm run build:node && npm run build:es2015",
         "build:node": "tsc -p tsconfig.node.json",
